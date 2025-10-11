@@ -1,0 +1,32 @@
+# Docker Compose for Coolify Deployment
+# This file is optimized for production deployment via Coolify
+# For local development, create docker-compose.override.yaml from the example file
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=${NODE_ENV:-production}
+
+    environment:
+      # Application settings
+      - PORT=${PORT:-3000}
+      - NODE_ENV=${NODE_ENV:-production}
+
+      # Custom message (optional)
+      - HELLO_MESSAGE=${HELLO_MESSAGE:-Hello from Coolify!}
+
+    restart: ${DOCKER_RESTART_POLICY:-unless-stopped}
+
+    healthcheck:
+      test: ${DOCKER_WEB_HEALTHCHECK_TEST:-node -e "require('http').get('http://localhost:3000/health', (r) => { process.exit(r.statusCode === 200 ? 0 : 1); })"}
+      interval: 60s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+
+    # Note: Do NOT expose ports here for Coolify deployment
+    # Coolify manages domains and routing via Traefik proxy
+    # Ports are only needed for local development (use override file)

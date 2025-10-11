@@ -1,0 +1,22 @@
+# Local Development Override File
+# Copy this file to docker-compose.override.yaml for local development
+# DO NOT commit docker-compose.override.yaml to git
+
+services:
+  web:
+    ports:
+      - "3000:3000"
+
+    volumes:
+      # Mount source code for hot-reloading
+      - .:/app
+      # Preserve node_modules in container
+      - /app/node_modules
+
+    environment:
+      - NODE_ENV=development
+      - HELLO_MESSAGE=Hello from local development!
+      # Disable health check logging in dev
+      - DOCKER_WEB_HEALTHCHECK_TEST=/bin/true
+
+    restart: no

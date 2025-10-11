@@ -30,3 +30,4 @@ services:
     # Note: Do NOT expose ports here for Coolify deployment
     # Coolify manages domains and routing via Traefik proxy
     # Ports are only needed for local development (use override file)
+`

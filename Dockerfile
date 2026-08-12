@@ -19,9 +19,6 @@ RUN npm run build
 
 FROM node:20-alpine AS runner
 
-RUN addgroup -g 1000 appuser && \
-    adduser -D -u 1000 -G appuser appuser
-
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -32,9 +29,12 @@ COPY package*.json ./
 RUN npm ci --omit=dev && \
     npm cache clean --force
 
-COPY --from=builder --chown=appuser:appuser /app ./
+COPY --from=builder /app ./
 
-USER appuser
+# Use the existing node user included in node:20-alpine
+RUN chown -R node:node /app
+
+USER node
 
 EXPOSE 3000
 

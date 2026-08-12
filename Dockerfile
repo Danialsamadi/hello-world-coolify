@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci
+RUN npm install
 
 
 FROM node:20-alpine AS builder
@@ -26,12 +26,11 @@ ENV PORT=3000
 
 COPY package*.json ./
 
-RUN npm ci --omit=dev && \
+RUN npm install --omit=dev && \
     npm cache clean --force
 
 COPY --from=builder /app ./
 
-# Use the existing node user included in node:20-alpine
 RUN chown -R node:node /app
 
 USER node
